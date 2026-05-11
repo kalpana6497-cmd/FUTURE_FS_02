@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LeadFlow CRM</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- ── AUTH SCREEN ───────────────────────────────────────────── -->
+  <div id="auth-screen" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-logo">⚡</div>
+      <h1 class="auth-title">LeadFlow CRM</h1>
+      <p class="auth-sub">Manage your leads, track conversions</p>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+        <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="login-form">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="login-user" placeholder="Enter your username" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-pass" placeholder="••••••••" />
+        </div>
+        <div id="login-error" class="auth-error hidden"></div>
+        <button class="btn-primary full-width" onclick="handleLogin()">Sign In →</button>
+        <div class="demo-accounts">
+          <p class="demo-title">Demo Accounts</p>
+          <div class="demo-row">
+            <span class="demo-badge admin-badge">Admin</span>
+            <code>admin</code> / <code>admin123</code>
+          </div>
+          <div class="demo-row">
+            <span class="demo-badge sales-badge">Sales Rep</span>
+            <code>sales1</code> / <code>sales123</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="register-form" class="hidden">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="reg-name" placeholder="Your full name" />
+            <span class="field-error" id="err-reg-name"></span>
+          </div>
+          <div class="form-group">
+            <label>Username *</label>
+            <input type="text" id="reg-user" placeholder="Choose a username" />
+            <span class="field-error" id="err-reg-user"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="reg-email" placeholder="you@company.com" />
+          <span class="field-error" id="err-reg-email"></span>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Password *</label>
+            <input type="password" id="reg-pass" placeholder="Min 6 characters" />
+            <span class="field-error" id="err-reg-pass"></span>
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <select id="reg-role" onchange="onRoleChange()">
+              <option value="sales">Sales Rep</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div id="reg-admin-key-group" class="form-group hidden">
+          <label>Admin Secret Key *</label>
+          <input type="password" id="reg-admin-key" placeholder="Enter admin secret key" />
+          <span class="field-error" id="err-reg-key"></span>
+          <span class="field-hint">Hint: <code>LEADFLOW2024</code></span>
+        </div>
+        <div id="register-error" class="auth-error hidden"></div>
+        <div id="register-success" class="auth-success hidden"></div>
+        <button class="btn-primary full-width" onclick="handleRegister()">Create Account →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN APP ─────────────────────────────────────────────── -->
+  <div id="app" class="app hidden">
+
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-name">LeadFlow</div>
+          <div class="brand-sub">CRM</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="leads">👥 <span>Leads</span></button>
+        <button class="nav-item" data-view="analytics">📊 <span>Analytics</span></button>
+        <button class="nav-item admin-only hidden" data-view="users">👤 <span>User Management</span></button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">?</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebar-name">—</div>
+            <div class="sidebar-user-role" id="sidebar-role-label">—</div>
+          </div>
+          <div class="sidebar-role-dot" id="sidebar-role-dot"></div>
+        </div>
+        <button class="btn-logout" id="logout-btn">Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="topbar">
+        <h1 id="page-title">Lead Management</h1>
+        <div class="topbar-right">
+          <span class="topbar-role-badge" id="topbar-role-badge"></span>
+          <button id="add-lead-btn" class="btn-primary">+ Add Lead</button>
+        </div>
+      </div>
+
+      <div class="content-area">
+
+        <!-- STATS -->
+        <div class="stats-grid">
+          <div class="stat-card" style="border-top-color:#6366F1">
+            <p class="stat-label">Total Leads</p>
+            <p class="stat-value" id="stat-total">0</p>
+            <p class="stat-sub" id="stat-total-sub">All leads</p>
+          </div>
+          <div class="stat-card" style="border-top-color:#3B82F6">
+            <p class="stat-label">New</p>
+            <p class="stat-value" id="stat-new">0</p>
+            <p class="stat-sub">Awaiting contact</p>
+          </div>
+          <div class="stat-card" style="border-top-color:#F59E0B">
+            <p class="stat-label">Contacted</p>
+            <p class="stat-value" id="stat-contacted">0</p>
+            <p class="stat-sub">In progress</p>
+          </div>
+          <div class="stat-card" style="border-top-color:#10B981">
+            <p class="stat-label">Converted</p>
+            <p class="stat-value" id="stat-converted">0</p>
+            <p class="stat-sub" id="stat-rate">0% conversion</p>
+          </div>
+        </div>
+
+        <!-- LEADS VIEW -->
+        <div id="leads-view">
+          <div class="filters-bar">
+            <input type="text" id="search-input" placeholder="🔍  Search name, email, company…" class="search-input"/>
+            <select id="filter-status">
+              <option value="all">All Statuses</option>
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="converted">Converted</option>
+            </select>
+            <select id="filter-source"><option value="all">All Sources</option></select>
+            <select id="filter-assignee" class="admin-only hidden"><option value="all">All Reps</option></select>
+            <select id="sort-by">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="name">Name A–Z</option>
+            </select>
+            <button id="clear-filters-btn" class="btn-clear hidden">✕ Clear</button>
+          </div>
+          <p id="leads-count" class="leads-count"></p>
+          <div class="table-wrapper">
+            <table id="leads-table">
+              <thead>
+                <tr>
+                  <th>Lead</th><th>Company</th><th>Source</th><th>Status</th>
+                  <th>Assigned To</th><th>Added</th><th>Notes</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="leads-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ANALYTICS VIEW -->
+        <div id="analytics-view" class="hidden">
+          <div class="analytics-grid">
+            <div class="analytics-card">
+              <h3>Conversion Funnel</h3>
+              <div id="funnel-bars"></div>
+              <div class="conv-rate-box">
+                <span id="conv-rate-big">0%</span>
+                <p>Conversion Rate</p>
+              </div>
+            </div>
+            <div class="analytics-card">
+              <h3>Leads by Source</h3>
+              <div id="source-bars"></div>
+            </div>
+            <div class="analytics-card admin-only hidden">
+              <h3>Performance by Rep</h3>
+              <div id="rep-bars"></div>
+            </div>
+            <div class="analytics-card" id="activity-card">
+              <h3>Recent Activity</h3>
+              <div id="activity-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USERS VIEW (Admin only) -->
+        <div id="users-view" class="hidden">
+          <div class="section-intro">
+            <p>All registered accounts and their access levels. Admins can remove sales rep accounts.</p>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th><th>Email</th><th>Role</th>
+                  <th>Leads Assigned</th><th>Joined</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ── ADD/EDIT LEAD MODAL ───────────────────────────────────── -->
+  <div id="lead-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="modal-title">Add New Lead</h2>
+        <button class="modal-close" id="modal-close-btn">✕</button>
+      </div>
+      <div class="modal-grid">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="m-name" placeholder="e.g. Priya Sharma"/>
+          <span class="field-error" id="err-name"></span>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="m-email" placeholder="priya@example.com"/>
+          <span class="field-error" id="err-email"></span>
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="m-phone" placeholder="+91 98765 43210"/>
+        </div>
+        <div class="form-group">
+          <label>Company</label>
+          <input type="text" id="m-company" placeholder="Company name"/>
+        </div>
+        <div class="form-group">
+          <label>Source</label>
+          <select id="m-source">
+            <option>Website</option><option>LinkedIn</option><option>Referral</option>
+            <option>Email Campaign</option><option>Cold Call</option><option>Trade Show</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="m-status">
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="converted">Converted</option>
+          </select>
+        </div>
+        <div class="form-group admin-only hidden" id="assign-group" style="grid-column:1/-1">
+          <label>Assign To Sales Rep</label>
+          <select id="m-assign"></select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="modal-cancel-btn">Cancel</button>
+        <button class="btn-primary" id="modal-save-btn">Add Lead</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LEAD DETAIL PANEL ─────────────────────────────────────── -->
+  <div id="detail-overlay" class="modal-overlay hidden">
+    <div class="detail-panel">
+      <div class="detail-header">
+        <div class="detail-top-row">
+          <div class="detail-avatar-row">
+            <div class="detail-avatar" id="detail-avatar">AB</div>
+            <div>
+              <h2 id="detail-name"></h2>
+              <p id="detail-company-sub"></p>
+            </div>
+          </div>
+          <button class="modal-close light" id="detail-close-btn">✕</button>
+        </div>
+        <div class="status-toggle-row" id="status-toggles"></div>
+      </div>
+
+      <div class="detail-body">
+        <div class="detail-info-box">
+          <h4>Contact Info</h4>
+          <div id="detail-info-content"></div>
+        </div>
+
+        <div class="assign-box admin-only hidden" id="detail-assign-box">
+          <h4>Assign to Sales Rep</h4>
+          <div class="assign-row">
+            <select id="detail-assign-select" style="flex:1"></select>
+            <button class="btn-sm-primary" onclick="saveAssignment()">Update</button>
+          </div>
+        </div>
+
+        <div class="notes-section">
+          <h4>Notes &amp; Follow-ups (<span id="notes-count">0</span>)</h4>
+          <div class="note-input-row">
+            <textarea id="note-input" placeholder="Add a note or follow-up…" rows="2"></textarea>
+            <button id="add-note-btn" class="btn-primary note-add-btn">+</button>
+          </div>
+          <div id="notes-list"></div>
+        </div>
+      </div>
+
+      <div class="detail-footer">
+        <button id="edit-lead-btn" class="btn-secondary sm">✏️ Edit</button>
+        <div style="display:flex;gap:0.5rem;align-items:center">
+          <button id="delete-lead-btn" class="btn-danger-outline">🗑 Delete</button>
+          <div id="confirm-delete" class="hidden confirm-row">
+            <span>Sure?</span>
+            <button id="cancel-delete-btn" class="btn-secondary sm">No</button>
+            <button id="confirm-delete-btn" class="btn-danger sm">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

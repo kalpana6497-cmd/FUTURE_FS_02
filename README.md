@@ -1,146 +1,93 @@
 # ⚡ LeadFlow CRM
 
-A simple multi-user **Customer Relationship Management (CRM)** web application built using HTML, CSS, and JavaScript.
-It allows teams to manage leads, track progress, and analyze performance with role-based access.
+A role-based Customer Relationship Management (CRM) web app to manage leads, track conversions, and analyze performance.
+
+---
+
+## 🌐 Live Demo
+
+👉 https://kalpana6497-cmd.github.io/FUTURE_FS_02/
+
+---
+
+## 🔐 Demo Login
+
+| Role      | Username | Password   |
+| --------- | -------- | ---------- |
+| Admin     | `admin`  | `admin123` |
+| Sales Rep | `sales1` | `sales123` |
+| Sales Rep | `sales2` | `sales456` |
+
+---
+
+## 📝 Registering a New Account
+
+* **Sales Rep** → Anyone can register freely
+* **Admin** → Requires secret key: `LEADFLOW2024`
+
+---
+
+## ⚠️ If Login Doesn't Work
+
+This app uses browser storage. If demo login fails:
+
+1. Press **F12**
+2. Go to **Console**
+3. Run:
+
+   ```js
+   localStorage.clear()
+   ```
+4. Refresh the page
 
 ---
 
 ## 🚀 Features
 
-### 🔐 Authentication
-
-* User Login & Registration
-* Role-based access:
-
-  * **Admin** → Full access
-  * **Sales Rep** → Limited to assigned leads
-* Demo accounts available for testing
-
----
-
-### 👥 Lead Management
-
-* Add, edit, and delete leads
-* Assign leads to sales reps (Admin only)
-* Track lead status:
-
-  * New
-  * Contacted
-  * Converted
-* Add notes and follow-ups
-
----
-
-### 📊 Analytics Dashboard
-
-* Conversion funnel
-* Leads by source
-* Performance by sales reps (Admin only)
-* Recent activity tracking
-
----
-
-### 🔎 Filters & Search
-
-* Search by name, email, or company
-* Filter by:
-
-  * Status
-  * Source
-  * Assigned rep
-* Sort leads by date or name
-
----
-
-### 👤 User Management (Admin Only)
-
-* View all registered users
-* Remove sales reps
-* Track leads assigned per user
-
----
-
-## 🧪 Demo Accounts
-
-Use these credentials to test the app:
-
-```
-Admin:
-Username: admin
-Password: admin123
-
-Sales:
-Username: sales1
-Password: sales123
-```
-
----
-
-## ⚠️ Important Note
-
-If login fails with demo accounts:
-
-1. Open browser console (F12)
-2. Run:
-
-```
-localStorage.clear();
-```
-
-3. Refresh the page
+* 🔑 Login & Registration system
+* 👤 Role-based access (Admin / Sales)
+* 📋 Lead management (Add, Edit, Delete)
+* 📝 Notes & follow-ups
+* 📊 Analytics dashboard
+* 🔍 Filters & search
+* 👥 User management (Admin only)
 
 ---
 
 ## 🛠️ Tech Stack
 
-* HTML5
-* CSS3
-* Vanilla JavaScript
-* LocalStorage (for data persistence)
+* HTML
+* CSS
+* JavaScript
+* LocalStorage
 
 ---
 
-## 📁 Project Structure
+## 📌 How It Works
 
-```
-/project-folder
-│── index.html
-│── style.css
-│── script.js
-```
+* Data is stored in browser using LocalStorage
+* Admin can see all leads
+* Sales reps see only assigned leads
 
 ---
 
-## 🔒 Admin Access
+## 📁 Files
 
-To register as an admin, use the secret key:
-
-```
-LEADFLOW2024
-```
+* index.html
+* style.css
+* script.js
 
 ---
 
 ## 💡 Future Improvements
 
-* Backend integration (Node.js / Express)
-* Database (MongoDB / MySQL)
-* Authentication with JWT
-* Password encryption
-* Real-time updates
+* Backend (Node.js / Express)
+* Database integration
+* Secure authentication
+* Cloud deployment
 
 ---
 
-## 📌 How to Run
+## 🙌 Acknowledgment
 
-1. Download or clone the project
-2. Open `index.html` in your browser
-3. Start using the CRM
-
----
-
-## 🙌 Author
-
-Built for learning and project development purposes.
-
----
+Built as part of my **Full Stack Web Development Internship at Future Interns**.
